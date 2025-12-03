@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "amplify-stateless @ git+https://github.com/WHOIGit/amplify-stateless-microservice.git@v1.1.1",
+    "amplify-storage-utils @ git+https://github.com/WHOIGit/amplify-storage-utils.git@v1.0.0",
     "pyifcb @ git+https://github.com/joefutrelle/pyifcb.git@v1.2.1",
 ]
 
