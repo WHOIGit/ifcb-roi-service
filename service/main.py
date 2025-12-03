@@ -8,9 +8,9 @@ config = ServiceConfig(
     description="Service for accessing IFCB ROI images and associated technical metadata.",
 )
 
-DATA_DIR = os.getenv("DATA_DIR", "/data")
+DATA_DIR = os.getenv("DATA_DIR", "/data/ifcb")
 
-app = create_app(IfcbRoiProcessor(), config)
+app = create_app(IfcbRoiProcessor(data_dir=DATA_DIR), config)
 
 if __name__ == "__main__":
     import uvicorn

@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from stateless_microservice import BaseProcessor, StatelessAction
 
+from service.roistore import IfcbRoiStore
 
 class RoiRequest(BaseModel):
     """Request payload for ROI service."""
@@ -17,7 +18,8 @@ class IfcbRoiProcessor(BaseProcessor):
     """Processor for accessing IFCB ROI images and associated technical metadata."""
 
     def __init__(self, data_dir: str = "/data/ifcb"):
-        self.data_dir = data_dir
+        store = IfcbRoiStore.base64_store(data_dir=data_dir)
+        self.store = store
 
     @property
     def name(self) -> str:
@@ -39,18 +41,10 @@ class IfcbRoiProcessor(BaseProcessor):
 
     async def handle_roi_image(self, payload: RoiRequest):
         """Get ROI image."""
-        from ifcb import DataDirectory, Pid
-        from ifcb.data.imageio import format_image
-        import base64
-        data_dir = DataDirectory(self.data_dir)
+        from ifcb import Pid
         pid = Pid(payload.pid)
         bin_lid = pid.bin_lid
-        target_number = int(pid.target)
-        b = data_dir[bin_lid]
-        with b.as_single(target_number) as single_bin:
-            image_array = single_bin.images[target_number]
-            image_data = format_image(image_array, "image/png").getvalue()
-            encoded_image_data = base64.b64encode(image_data).decode("utf-8")
+        encoded_image_data = self.store.get(payload.pid)
         return {
             "pid": payload.pid,
             "bin-pid": bin_lid,
