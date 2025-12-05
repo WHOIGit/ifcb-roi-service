@@ -1,12 +1,10 @@
-FROM python:3.12-slim
+FROM astral/uv:python3.12-bookworm-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN apt-get update && apt-get install -y git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/root/.local/bin:$PATH"
 
