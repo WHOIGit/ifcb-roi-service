@@ -4,7 +4,7 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from stateless_microservice import BaseProcessor, StatelessAction
+from stateless_microservice import BaseProcessor, StatelessAction, run_blocking
 
 from service.roistore import IfcbRoiStore
 
@@ -43,7 +43,7 @@ class IfcbRoiProcessor(BaseProcessor):
         from ifcb import Pid
         pid = Pid(path_params.pid)
         bin_lid = pid.bin_lid
-        encoded_image_data = self.store.get(path_params.pid)
+        encoded_image_data = await run_blocking(self.store.get, path_params.pid)
         return {
             "pid": path_params.pid,
             "bin-pid": bin_lid,
