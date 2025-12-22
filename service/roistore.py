@@ -57,11 +57,12 @@ class IfcbRoiStore(ObjectStore):
         """
         super().__init__()
         self.bucket_store = BucketStore(
-            bucket_name=bucket_name,
-            endpoint_url=endpoint_url,
+            s3_url=endpoint_url,
             s3_access_key=s3_access_key,
             s3_secret_key=s3_secret_key,
+            bucket_name=bucket_name,
         )
+        self.bucket_store.__enter__()
         self.prefix = prefix.rstrip("/")
 
     def _make_key(self, pid: str) -> str:
